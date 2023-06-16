@@ -107,5 +107,8 @@ def handelLogout(request):
     messages.success(request, "Successfully logged out")
     return redirect('home')
 
+def session(request):
+     return render(request, "home/session.html")
+
 
 

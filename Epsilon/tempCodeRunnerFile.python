@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Sep 22 07:57:57 2022
+
+@author: MOHD UWAISH
+"""
+import img2pdf
+from PIL import Image
+import os
+from PyPDF2 import PdfFileMerger
+#from pyPdf import PdfFileReader, PdfFileWriter
+
+# FILE PATHS
+img1= "C:\\Users\\MOHD UWAISH\\OneDrive\\Documents\\Scanned Documents\\Image(4).jpeg"
+img2= "C:\\Users\MOHD UWAISH\\OneDrive\\Documents\\Scanned Documents\\Image(6).jpg"
+pdf_front="C:\\Users\MOHD UWAISH\\OneDrive\\Documents\\Scanned Documents\\FRONT.pdf"
+pdf_back="C:\\Users\MOHD UWAISH\\OneDrive\\Documents\\Scanned DocumentsT\\BACK.pdf"
+merged1_pdf="C:\\Users\MOHD UWAISH\\OneDrive\\Documents\\Scanned Documents\\MERGED.pdf"
+
+#IMAGE OPEN AND CONVERT TO BYTES
+images=Image.open(img1)
+pdf=img2pdf.convert(images.filename)
+
+#BYTE DATA RITTEN INTO PDF FILE
+file= open(pdf_front,"wb")
+file.write(pdf)
+images.close()
+file.close()
+print("DONE_FRONT")
+
+
+
+#IMAGE OPEN AND CONVERT TO BYTES
+images=Image.open(img2)
+pdf=img2pdf.convert(images.filename)
+
+
+#BYTE DATA RITTEN INTO PDF FILE
+file= open(pdf_back,"wb")
+file.write(pdf)
+images.close()
+file.close()
+print("DONE_BACK")
+	
+print("********STARTING TO MERGE BOTH FRONT AND BACK**********") 
+     
+#MERGING OF BOTH PDFS STARTED
+#pdfOne = "C:\\Users\\MOHD UWAISH\\OneDrive\\Documents\\Scanned Documents\\GRADUATION_MARKSHEETS\\SEM_8\\FRONT.pdf"
+#pdfTwo = "C:\\Users\\MOHD UWAISH\\OneDrive\\Documents\\Scanned Documents\\GRADUATION_MARKSHEETS\\SEM_8\\BACK.pdf"
+pdfs=[pdf_front,pdf_back]
+
+merger=PdfFileMerger() 
+
+for pdf in pdfs:
+    merger.append(pdf)
+
+merger.write(merged1_pdf)
+merger.close()
+
+
+print("********MERGE COMPLETE**********")
