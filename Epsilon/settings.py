@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
     'blog.apps.BlogConfig',
-    'django.contrib.humanize'
+    'TechBlog.apps.TechblogConfig',
+    'django.contrib.humanize',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -107,6 +109,17 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+CKEDITOR_UPLOAD_PATH = 'uploads/'  # Define the upload path for images and files
+CKEDITOR_IMAGE_BACKEND = 'pillow'  # Use Pillow as the image manipulation backend
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',  # Customize the toolbar as per your needs
+        'height': 300,  # Set the editor height
+        'width': 1000,  # Set the editor width
+    },
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -135,3 +148,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'goodhomelander@gmail.com'
+EMAIL_HOST_PASSWORD = 'dkoghivtbgysdlly'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'noreply@mohduwaish.com'

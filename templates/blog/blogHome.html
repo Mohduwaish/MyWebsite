@@ -1,32 +1,112 @@
 {% extends 'base.html' %}
 
-{% block title %} BlogHome {% endblock title %}
-{% block blogactive %} active {% endblock blogactive %} 
+{% block title %}BlogHome{% endblock title %}
 
+{% block js %}
+<script>
+    let previews = document.getElementsByClassName('preview');
+    Array.from(previews).forEach((element) => {
+        element.innerHTML = element.innerText;
+    });
+</script>
+{% endblock js %}
+
+{% block blogactive %}active{% endblock blogactive %}
 
 {% block body %}
 <div class="container my-3">
-    <h2>Coding Articles by iCoder</h2>
-    {% for post in allPosts  %}
-    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 my-4 position-relative">
-        <div class="col p-4 d-flex flex-column position-static">
-            <strong class="d-inline-block mb-2 text-primary">Article  by {{post.author}}</strong>
-            <h3 class="mb-0">{{post.title}}</h3>
-            <div class="mb-1 text-muted">{{post.datetime}}</div>
-            <p class="card-text mb-auto">{{post.content| truncatechars:500}}</p>
-            <div class="my-2">
-            	<a href="/blog/{{post.slug}}" role="button" class="btn btn-primary">Continue reading</a>
+    <h2>Blog Articles by iCoder</h2>
+    <div class="row">
+        {% for post in page_obj %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title custom-card-header">{{ post.title }}</h5>
+                        <strong class="d-inline-block mb-2 text-primary">Article by {{ post.author }}</strong>
+                        <p class="card-text">{{ post.content|safe|truncatechars:200 }}</p>
+                        <a href="{% url 'blogpost' post.slug %}" class="btn btn-dark">Read More</a>
+                    </div>
+                </div>
             </div>
-            
-        </div>
-        <div class="col-auto d-none d-lg-block">
-            <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-            </svg>
-        </div>
-        </div>
-
+        {% empty %}
+            <div class="col-md-12">
+                <p>No blog posts found.</p>
+            </div>
         {% endfor %}
     </div>
- {% endblock %}
+</div>
+
+<!-- Display pagination links -->
+<div class="pagination">
+    <ul class="pagination-list">
+        {% if page_obj.has_previous %}
+            <li class="pagination-item">
+                <a href="?page=1" class="btn btn-outline-dark pagination-link">&laquo; first</a>
+            </li>
+            <li class="pagination-item">
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-dark pagination-link">previous</a>
+            </li>
+        {% endif %}
+
+        <li class="pagination-item">
+            <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+        </li>
+
+        {% if page_obj.has_next %}
+            <li class="pagination-item">
+                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-dark pagination-link">next</a>
+            </li>
+            <li class="pagination-item">
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-dark pagination-link">&raquo; last</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+
+<style>
+    /* Add your custom styles here */
+
+    /* Pagination Styles */
+    .pagination {
+        margin-top: 20px;
+        margin-bottom: 20px; /* Added margin at the bottom */
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination-list {
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .pagination-item {
+        margin: 0 5px;
+    }
+
+    .pagination-link {
+        padding: 6px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .pagination-link:hover {
+        background-color: #f0f0f0;
+    }
+
+    .current {
+        padding: 6px 10px;
+        font-weight: bold;
+    }
+
+    /* Card Styles */
+    .custom-card-header {
+        background-color: grey;
+        color: white;
+        padding: 10px;
+    }
+</style>
+
+{% endblock %}

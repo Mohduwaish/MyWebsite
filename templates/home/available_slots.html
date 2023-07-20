@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %} Book a 1:1 Session{% endblock title %}
+
+{% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Slots</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .booking-link {
+            color: #4caf50;
+            text-decoration: none;
+        }
+        .booking-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Available Slots</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Book</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for slot in slots %}
+                <tr>
+                    <td>{{ slot.date }}</td>
+                    <td>{{ slot.start_time }} - {{ slot.end_time }}</td>
+                    <td><a class="booking-link" href="{% url 'home:book_slot' slot.id %}">Book</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No slots available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <h1>Please Note</h1>
+        <table>
+            <tbody>
+            If there's no slot available (or the slots available are not suitable for you), It's probably due to I forgot to open and save them in database.<br>
+            Please drop me an Email asking for the slot.<br>
+            You may go to contact page and send message from there or you can directly write me an Email.<br>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+{% endblock %}

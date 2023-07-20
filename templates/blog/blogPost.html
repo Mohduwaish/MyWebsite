@@ -1,68 +1,93 @@
 {% extends 'base.html' %}
-{% block title %} Blogpost{% endblock title %}
+{% block title %}Blogpost{% endblock title %}
 {% block body %}
 {% load humanize %}
 {% load extras %}
-<div class="container my-3">
-    <h2 class="blog-post-title">{{post.title}}</h2>
-    <p class="blog-post-meta">{{post.timeStamp}} by <a href="/about">{{post.author}}</a></p>
-    <p>{{post.content}}</p>
-    <hr>
-</div>
-<div class="container">
-    <h2> Comments ({{comments.count}}) </h2>
-    <div class="my-2">
-        {% if user.is_authenticated %}
-        <form action="/blog/postComment" method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="exampleInputEmail1">Post Comment </label>
-                <input type="text" class="form-control" name="comment" placeholder="Enter comment here">
-            </div>
-            <input type="hidden" name="postSno" value="{{post.sno}}">
-            <input type="hidden" name="parentSno" value="">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-        {% else %}
-        Please login to post a comment
-        {% endif %}
+    <style>
+        .comment {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        .comment .content {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .comment .replies {
+            margin-top: 10px;
+            margin-left: 30px;
+        }
+        .comment .nested-replies {
+            margin-left: 30px;
+            padding-left: 10px;
+            border-left: 1px solid #ddd;
+        }
+        .comment .reply-button {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+    <div class="container my-3">
+        <h2 class="blog-post-title">{{ post.title }}</h2>
+        <p class="blog-post-meta">{{ post.timeStamp }} by <a href="/about">{{ post.author }}</a></p>
+        <p>{{ post.content | safe }}</p>
+        <hr>
     </div>
-    {% for comment in comments %}
-    <div class="row my-3">
-        <div class="col-md-1  ">
-            <img class="rounded mx-auto d-block w-100 border border-dark p-2" src="/static/img/user.png" alt="user">
+    <div class="container">
+        <h2>Comments ({{ comments.count }})</h2>
+        <div class="my-2">
+            {% if user.is_authenticated %}
+            <form action="{% url 'postComment' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Post Comment</label>
+                    <input type="text" class="form-control" name="comment" placeholder="Enter comment here">
+                </div>
+                <input type="hidden" name="postSno" value="{{ post.sno }}">
+                <input type="hidden" name="parentSno" value="">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            {% else %}
+            Please login to post a comment
+            {% endif %}
         </div>
-        <div class="col-md-11 ">
-        <b> {{comment.user.username}} </b> <span class="badge badge-secondary ">{{comment.timestamp| naturaltime}}</span>
-            <div class="reply mx-0">
-            
-                <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#replyBox{{comment.sno}}" aria-expanded="false" aria-controls="replyBox{{comment.sno}}">
-                    Reply
-                </button>
-                <div class="collapse" id="replyBox{{comment.sno}}">
-                    <div class="card card-body my-2">
-                        <form action="/blog/postComment" method="post">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="comment">Post a reply </label>
-                                <input type="text" class="form-control" name="comment" placeholder="Enter comment here">
-                                <input type="hidden" name="parentSno" value="{{comment.sno}}">
-                            </div>
-                            <input type="hidden" name="postSno" value="{{post.sno}}">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
+        {% for comment in comments %}
+        <div class="comment">
+            <div class="row">
+                <div class="col-md-1">
+                    <img class="rounded mx-auto d-block img-fluid border border-dark p-2" src="/static/img/user.png" alt="user" style="max-width: 90px;">
+                </div>
+                <div class="col-md-11">
+                    <div class="content">
+                        <b>{{ comment.user.username }}</b>
+                        <span class="badge badge-secondary">{{ comment.timestamp|naturaltime }}</span>
+                        <p>{{ comment.comment }}</p>
+                        <span class="reply-button" data-toggle="collapse" data-target="#replyBox{{ comment.sno }}" aria-expanded="false" aria-controls="replyBox{{ comment.sno }}">Reply</span>
+                    </div>
+                    <div class="collapse" id="replyBox{{ comment.sno }}">
+                        <div class="card card-body my-2">
+                            <form action="{% url 'postComment' %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="comment">Post a reply</label>
+                                    <input type="text" class="form-control" name="comment" placeholder="Enter comment here">
+                                    <input type="hidden" name="parentSno" value="{{ comment.sno }}">
+                                </div>
+                                <input type="hidden" name="postSno" value="{{ post.sno }}">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="replies">
+                        {% for reply in replyDict|get_val:comment.sno %}
+                            {% include 'blog/nested_replies.html' with nested_reply=reply level=1 %}
+                        {% endfor %}
                     </div>
                 </div>
-    
-                <div class="replies bg-danger my-2 ">
-                {% for reply in replyDict|get_val:comment.sno %}
-                {{reply}}
-                <br> 
-                {% endfor %}
-                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
 {% endblock %}

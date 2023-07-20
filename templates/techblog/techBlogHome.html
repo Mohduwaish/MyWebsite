@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}TechBlogHome{% endblock title %}
+
+{% block js %}
+<script>
+    let previews = document.getElementsByClassName('preview');
+    Array.from(previews).forEach((element) => {
+        element.innerHTML = element.innerText;
+    });
+</script>
+{% endblock js %}
+
+{% block techblogactive %}active{% endblock techblogactive %}
+
+{% block body %}
+<div class="container my-3">
+    <h2>Blog Articles by iCoder</h2>
+    <div class="row">
+        {% for post in page_obj %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title custom-card-header">{{ post.title }}</h5>
+                        <strong class="d-inline-block mb-2 text-primary">Article by {{ post.author }}</strong>
+                        <p class="card-text">{{ post.content|safe|truncatechars:200 }}</p>
+                        <a href="{% url 'TechBlog:TechBlogPost' post.slug %}" class="btn btn-info">Read More</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-md-12">
+                <p>No blog posts found.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Display pagination links -->
+<div class="pagination">
+    <ul class="pagination-list">
+        {% if page_obj.has_previous %}
+            <li class="pagination-item">
+                <a href="?page=1" class="btn btn-outline-info pagination-link">&laquo; first</a>
+            </li>
+            <li class="pagination-item">
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-info pagination-link">previous</a>
+            </li>
+        {% endif %}
+
+        <li class="pagination-item">
+            <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+        </li>
+
+        {% if page_obj.has_next %}
+            <li class="pagination-item">
+                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-info pagination-link">next</a>
+            </li>
+            <li class="pagination-item">
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-info pagination-link">&raquo; last</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+
+<style>
+    /* Add your custom styles here */
+
+    /* Pagination Styles */
+    .pagination {
+        margin-top: 20px;
+        margin-bottom: 20px; /* Added margin at the bottom */
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination-list {
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .pagination-item {
+        margin: 0 5px;
+    }
+
+    .pagination-link {
+        padding: 6px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .pagination-link:hover {
+        background-color: #f0f0f0;
+    }
+
+    .current {
+        padding: 6px 10px;
+        font-weight: bold;
+    }
+
+    /* Card Styles */
+    .custom-card-header {
+        background-color: grey;
+        color: white;
+        padding: 10px;
+    }
+</style>
+
+{% endblock %}

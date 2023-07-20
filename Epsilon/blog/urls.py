@@ -8,7 +8,7 @@ admin.site.index_title="Welcome to Epsilon Admin Panel"
 
 
 urlpatterns = [
-    path('postComment', views.postComment, name='postComment'),
     path('', views.bloghome, name="bloghome"),
-    path('/<str:slug>', views.blogpost, name="blogpost"),
+    path('<str:slug>', views.blogpost, name="blogpost"),
+    path('postComment', views.postComment, name='postComment'),
 ]

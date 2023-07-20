@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %} Blogpost{% endblock title %}
+{% block body %}
+{% load humanize %}
+{% load extras %}
+<div class="container my-3">
+    <h2 class="blog-post-title">{{post.title}}</h2>
+    <p class="blog-post-meta">{{post.timeStamp}} by <a href="/about">{{post.author}}</a></p>
+
+   <!-- Tags section -->
+   <div class="tags">
+    <strong>Tags:</strong>
+    {% for tag in tags %}
+    <a href="{% url 'TechBlog:postsByTag' tag.id %}" class="badge badge-primary">{{ tag}}</a>
+    {% endfor %}
+    
+    <p>{{post.content}}</p>
+
+  {% include 'techblog/add_comment.html' %}
+
+
+<h2>Comments</h2>
+<div class="center">
+  <ul id="commentList">
+    {% for comment in post.comment_set.all %}
+      <li>
+        <div class="card mb-3">
+          <div class="card-body">
+            <img class="rounded-circle shadow-1-strong me-3" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(10).webp" alt="avatar" width="65" height="65" />
+            <div class="flex-grow-1 flex-shrink-1">
+              <div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <p class="mb-1">
+                    {{ comment.user.username }} <span class="small">- {{ comment.created_at|timesince }} ago</span>
+                  </p>
+                  <a href="{% url 'TechBlog:replies' comment.id %}?reply_to={{ comment.id }}"><i class="fas fa-reply fa-xs"></i><span class="small"> reply</span></a>
+                </div>
+                <p class="small mb-0 comment-content">
+                  {{ comment.content }}
+                </p>
+              </div>
+            </div>
+          </div>
+          {% for reply in comment.replies.all %}
+            <div class="card-body">
+              <div class="d-flex flex-start mt-4">
+                <a class="me-3" href="#">
+                  <img class="rounded-circle shadow-1-strong" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp" alt="avatar" width="65" height="65" />
+                </a>
+                <div class="flex-grow-1 flex-shrink-1">
+                  <div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <p class="mb-1">
+                        {{ reply.user.username }} <span class="small">- {{ reply.created_at|timesince }} ago</span>
+                      </p>
+                      <a href="{% url 'TechBlog:replies' comment.id %}?reply_to={{ comment.id }}"><i class="fas fa-reply fa-xs"></i><span class="small"> reply</span></a>
+                    </div>
+                    <div class="container">
+                      <p class="small mb-0 comment-content">
+                        {{ reply.content }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% empty %}
+          {% endfor %}
+        </div>
+      </li>
+    {% empty %}
+      <li>No comments yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+    {% include 'like.html' %}   
+    {{post.likes.count}}
+  </div>
+    <hr>
+</div>
+
+<style>
+  .comment-content {
+      font-size: 18px; /* Adjust the font size as per your preference */
+  }
+  .center {
+    border: 5px;
+    margin: auto;
+    width: 90%;
+    padding: 10px;
+  }
+  .comment-content {
+    word-break: break-word;
+}
+
+</style>
+{% endblock %}

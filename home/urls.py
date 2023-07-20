@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from home import views
+app_name='home'
 
 urlpatterns = [
     path('contact', views.contact, name='contact'),
@@ -25,5 +26,12 @@ urlpatterns = [
     path('signup', views.handleSignUp, name="handleSignUp"),
     path('login', views.handeLogin, name="handleLogin"),
     path('logout', views.handelLogout, name="handleLogout"),
-    path('session', views.session, name='session'),
+    path('available_slots', views.available_slots, name='available_slots'),
+    path('slots/book/<int:slot_id>/',views.book_slot, name='book_slot'),
+    path('booking/success/', views.booking_success, name='booking_success'),
+    path('PDF', views.PDF, name='PDF'),
+    path('after_email_subs', views.after_email_subs, name='after_email_subs'),
+    path('download_pdf/<int:pdf_id>/', views.download_pdf, name='download_pdf'),
+
 ]
+

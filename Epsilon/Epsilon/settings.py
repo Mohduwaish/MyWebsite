@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
     'blog.apps.BlogConfig',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -90,6 +91,27 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 360,
+    'width': 860,
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+    'selector': 'textarea',
+    'plugins': '''
+        autolink lists link image charmap print preview anchor
+        searchreplace visualblocks code fullscreen
+        insertdatetime media table paste code help wordcount''',
+    'toolbar': '''
+        undo redo | formatselect | bold italic backcolor |
+        alignleft aligncenter alignright alignjustify |
+        bullist numlist outdent indent | removeformat | help''',
+    'toolbar_mode': 'floating',
+    'contextmenu': 'formats | link',
+    'menubar': True,
+    'relative_urls': False,
+    'file_browser_callback': 'mce_filebrowser',
 }
 
 
@@ -144,5 +166,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
 
 
